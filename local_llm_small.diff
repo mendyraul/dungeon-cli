@@ -1,0 +1,117 @@
+Here's the unified diff patch to implement the hardcore mode feature:
+
+
+--- a/include/Game.hpp
++++ b/include/Game.hpp
+@@ -1,6 +1,6 @@
+ #pragma once
+ 
+ #include "Map.hpp"
+-#include "Types.hpp"
++#include "Types.hpp"
+ #include <optional>
+ #include <string>
+ #include <vector>
+@@ -17,6 +17,7 @@ class Game {
+   bool won_{false};
+   bool fogEnabled_{true};
+ 
++  bool hardcoreMode_{false};
+ 
+   void newGame();
+   void draw() const;
+--- a/src/Game.cpp
++++ b/src/Game.cpp
+@@ -1,5 +1,5 @@
+ #include "Game.hpp"
+-#include "Types.hpp"
++#include "Types.hpp"
+ #include <algorithm>
+ #include <fstream>
+ #include <iostream>
+@@ -24,6 +24,12 @@ void Game::newGame() {
+   pushLog("Commands: w/a/s/d, i, u <idx>, save, load, stats, help, fog, rest, buy <potion|sword>, quit");
+ }
+ 
++void Game::handleInput(const std::string& in) {
++  if (in == "hardcore") {
++    hardcoreMode_ = !hardcoreMode_;
++    pushLog(std::string("Hardcore mode ") + (hardcoreMode_ ? "enabled" : "disabled"));
++  } else if (in == "help") {
++    pushLog("w/a/s/d move | i inv | u <idx> use | buy potion|sword | rest | fog | hardcore | save/load | stats | quit");
++  } else {
++    // existing code...
++  }
++}
++
+ void Game::draw() const {
+   std::cout << "\n";
+   std::cout << "HP: " << player_.hp << "/" << player_.maxHp << " | ";
+@@ -31,6 +37,9 @@ void Game::draw() const {
+   std::cout << "  Fog:" << (fogEnabled_ ? "ON" : "OFF") << "\n";
+   std::cout << "  Items: " << worldItems_.size() << "\n";
+   std::cout << "  Enemies: " << enemies_.size() << "\n";
++  if (hardcoreMode_) {
++    std::cout << "  Hardcore:ON\n";
++  } else {
++    std::cout << "  Hardcore:OFF\n";
++  }
+   std::cout << "  Log:\n";
+   for (const auto& msg : log_) {
+     std::cout << "    " << msg << "\n";
+@@ -50,6 +59,12 @@ void Game::handleInput(const std::string& in) {
+   } else if (in == "rest") {
+     int heal = player_.maxHp / 5;
+     player_.hp = std::min(player_.hp + heal, player_.maxHp);
++    if (hardcoreMode_) {
++      pushLog("You rest and recover " + std::to_string(heal) + " HP.");
++    } else {
++      pushLog("You rest and recover " + std::to_string(heal) + " HP.");
++    }
++  } else if (in.rfind("buy ", 0) == 0) {
++    if (hardcoreMode_) {
++      pushLog("Cannot buy items in hardcore mode.");
++      return;
++    }
++    // existing buy code...
++  } else if (in == "quit") {
++    // existing quit code...
++  }
+ }
+ 
+ void Game::tryMove(int dx, int dy) {
+@@ -69,6 +82,11 @@ void Game::tryMove(int dx, int dy) {
+   if (player_.pos.x + dx < 0 || player_.pos.x + dx >= map_.width ||
+       player_.pos.y + dy < 0 || player_.pos.y + dy >= map_.height) {
+     return;
++  }
++  if (hardcoreMode_) {
++    // Check if there's a trap at the destination
++    if (map_.getTile(player_.pos.x + dx, player_.pos.y + dy) == TileType::TRAP) {
++      player_.hp -= 3; // Add 3 damage in hardcore mode
++      pushLog("You step on a trap and take 3 damage!");
++      if (player_.hp <= 0) {
++        pushLog("You died from the trap!");
++        running_ = false;
++      }
++    }
+   }
+   // existing code...
+ }
+@@ -100,6 +115,12 @@ bool Game::save(const std::string& path) const {
+   std::ofstream file(path);
+   if (!file.is_open()) return false;
+   file << "Player " << player_.pos.x << ' ' << player_.pos.y << ' ' << player_.hp << ' ' << player_.maxHp << ' ' << player_.atk << ' ' << player_.def << ' ' << player_.level << ' ' << player_.xp << ' ' << player_.nextXp << ' ' << fogEnabled_ << ' ' << hardcoreMode_ << '\n';
++  // existing save code...
++}
++
++bool Game::load(const std::string& path) {
++  std::ifstream file(path);
++  if (!file.is_open()) return false;
++  std::string line;
++  std::getline(file, line);
++  std::istringstream iss(line);
++  std::string type;
++  iss >> type >> player_.pos.x >> player_.pos.y >> player_.hp >> player_.maxHp >> player_.atk >> player_.def >> player_.level >> player_.xp >> player_.nextXp >> fogEnabled_ >> hardcoreMode_;
++  // existing load code...
+ }

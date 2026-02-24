@@ -1,0 +1,64 @@
+```diff
+diff --git a/include/Game.hpp b/include/Game.hpp
+index 32c0f1d..a1b2c3d 100644
+--- a/include/Game.hpp
++++ b/include/Game.hpp
+@@ -15,6 +15,7 @@ class Game {
+     void processCommand(const std::string& command);
+     void displayHelp();
+     void displayStats();
++    void setSeed(int seed);
+ 
+ private:
+     Player player;
+diff --git a/src/Game.cpp b/src/Game.cpp
+index 456789a..b789012 100644
+--- a/src/Game.cpp
++++ b/src/Game.cpp
+@@ -1,5 +1,6 @@
+ #include "Game.hpp"
+ #include "Map.hpp"
++#include <random>
+ 
+ Game::Game() : player(100, 10, 5), map(20, 20) {
+     map.generateMap(player.getX(), player.getY());
+@@ -25,6 +26,15 @@ void Game::processCommand(const std::string& command) {
+     if (cmd == "help") {
+         displayHelp();
+     } else if (cmd == "stats") {
++        displayStats();
++    } else if (cmd == "seed") {
++        try {
++            int seed = std::stoi(args[0]);
++            setSeed(seed);
++        } catch (const std::exception&) {
++            std::cout << "Invalid seed value. Please provide a valid integer." << std::endl;
++        }
++    } else {
+         std::cout << "Unknown command. Type 'help' for available commands." << std::endl;
+     }
+ }
+@@ -40,6 +50,15 @@ void Game::displayStats() {
+     std::cout << "Health: " << player.getHealth() << std::endl;
+     std::cout << "Attack: " << player.getAttack() << std::endl;
+     std::cout << "Defense: " << player.getDefense() << std::endl;
++}
++
++void Game::setSeed(int seed) {
++    // Save current player stats
++    int health = player.getHealth();
++    int attack = player.getAttack();
++    int defense = player.getDefense();
++    int x = player.getX();
++    int y = player.getY();
++    
++    // Regenerate map with new seed
++    map = Map(20, 20, seed);
++    
++    // Reset player to original position with saved stats
++    player = Player(health, attack, defense);
++    player.setPosition(x, y);
++    
++    std::cout << "Map regenerated with seed " << seed << std::endl;
+ }
+```

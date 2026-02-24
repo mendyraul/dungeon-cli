@@ -1,0 +1,3 @@
+Task1-seed-command: FAIL - compile failed; make: *** [<builtin>: src/Game.o] Error 1
+Task2-highscore: FAIL - compile failed; make: *** [<builtin>: src/Game.o] Error 1
+Task3-hardcore-toggle: FAIL - compile failed; make: *** [<builtin>: src/Game.o] Error 1

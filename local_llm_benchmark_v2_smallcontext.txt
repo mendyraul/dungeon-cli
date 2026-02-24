@@ -1,0 +1,3 @@
+seed: FAIL | a1:apply_fail,a2:apply_fail,a3:apply_fail,a4:apply_fail
+highscore: FAIL | a1:apply_fail,a2:apply_fail,a3:apply_fail,a4:apply_fail
+hardcore: FAIL | a1:apply_fail,a2:apply_fail,a3:apply_fail,a4:apply_fail
