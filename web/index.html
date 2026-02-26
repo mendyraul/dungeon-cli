@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dungeon + Blackjack Arcade</title>
+  <link rel="stylesheet" href="./css/blackjack.css" />
+  <style>
+    body{margin:0;font-family:Inter,system-ui;background:#0b1020;color:#e6edf3}
+    header{padding:16px 20px;border-bottom:1px solid #293042;background:#11172a;display:flex;justify-content:space-between;align-items:center}
+    .tabs{display:flex;gap:8px}.tabs button{padding:10px 14px;border-radius:8px;border:1px solid #39435b;background:#1a2238;color:#e6edf3;cursor:pointer}
+    .tabs button.active{background:#2d63ff;border-color:#2d63ff}
+    .view{display:none;padding:16px}.view.active{display:block}
+    #dungeonOutput{white-space:pre-wrap;background:#060a14;border:1px solid #293042;border-radius:10px;padding:14px;min-height:220px;font-family:ui-monospace,monospace}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+    input{padding:8px;border-radius:8px;border:1px solid #39435b;background:#10182b;color:#e6edf3}
+    .hint{color:#97a3bd;font-size:.9rem}
+    .blackjack-shell{padding:0;min-height:auto;background:transparent}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dungeon + Blackjack Arcade</h1>
+    <div class="tabs">
+      <button id="tabDungeon" class="active">Dungeon (WASM)</button>
+      <button id="tabBlackjack">Blackjack</button>
+    </div>
+  </header>
+
+  <section id="viewDungeon" class="view active">
+    <p class="hint">Dungeon runs through WebAssembly when available. Fallback generator runs if wasm artifact is missing.</p>
+    <div class="controls">
+      <label>Width <input id="w" type="number" value="25" min="10" max="80" /></label>
+      <label>Height <input id="h" type="number" value="12" min="6" max="40" /></label>
+      <button id="generateDungeon">Generate Dungeon</button>
+    </div>
+    <div id="dungeonOutput">Loading runtime...</div>
+  </section>
+
+  <section id="viewBlackjack" class="view">
+    <div class="blackjack-shell">
+      <div class="app-shell">
+        <header>
+          <h1>Blackjack Pi</h1>
+          <p>Unified into the Dungeon Arcade repo</p>
+        </header>
+        <main class="game-layout">
+          <section class="bank-panel panel">
+            <h2>Bank</h2>
+            <div class="bank-amount" id="bankAmount">Chips: 0</div>
+            <button id="addChipsBtn" class="primary">Add 10 Chips</button>
+            <label class="bet-label" for="betInput">Bet Amount</label>
+            <div class="bet-controls">
+              <input type="number" id="betInput" min="1" step="1" value="10" inputmode="numeric" />
+              <button id="dealBtn" class="accent">Deal Hand</button>
+            </div>
+            <p class="bet-note">Choose a bet and tap Deal to start a round.</p>
+          </section>
+          <section class="table-panel panel">
+            <div class="status-row"><div id="roundStatus">Tap Deal to begin.</div><div id="currentBet">Current Bet: 0</div></div>
+            <div class="table-stage">
+              <div class="shoe-container"><div class="card-shoe" id="cardShoe"><div class="shoe-lines" id="shoeLines"></div><span class="card-back"></span><div class="shoe-mouth"></div></div></div>
+              <div class="chair dealer-chair"><div class="chair-back"></div><div class="chair-seat"></div><span class="chair-label">Dealer</span></div>
+              <div class="chair player-chair"><div class="chair-back"></div><div class="chair-seat"></div><span class="chair-label">You</span></div>
+              <div class="round-table">
+                <div class="felt-sheen"></div>
+                <div class="hand-slot dealer-slot"><h2>Dealer</h2><div class="cards" id="dealerCards"></div><div class="score" id="dealerScore">Score: --</div></div>
+                <div class="hand-slot player-slot"><div class="player-hand-header"><h2>You</h2><div class="split-indicator" id="splitIndicator">Hand 1</div></div><div class="player-hands" id="playerHands"></div></div>
+              </div>
+            </div>
+            <div class="controls">
+              <button id="hitBtn" class="primary" disabled>Hit</button>
+              <button id="stayBtn" disabled>Stay</button>
+              <button id="doubleBtn" class="accent" disabled>Double</button>
+              <button id="splitBtn" disabled>Split</button>
+              <button id="surrenderBtn" class="ghost" disabled>Surrender</button>
+            </div>
+          </section>
+          <section class="history-panel panel"><div class="history-header"><h2>Hand History</h2><button id="clearHistoryBtn" class="ghost">Clear</button></div><ol id="historyList"></ol></section>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <script src="./js/wasm-dungeon.js"></script>
+  <script src="./js/blackjack.js"></script>
+</body>
+</html>

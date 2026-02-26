@@ -82,3 +82,21 @@ g++ -std=c++17 -O2 -Wall -Wextra -Iinclude src/*.cpp -o dungeon-cli
 
 Repository is initialized locally on branch `dev`.
 No commits were made per your request.
+
+## Web + Vercel (WASM Arcade)
+
+This repo now hosts a unified web arcade (Dungeon + Blackjack) under `web/`.
+
+- Entry: `web/index.html`
+- Blackjack assets: `web/js/blackjack.js`, `web/css/blackjack.css`
+- WASM bridge source: `src/wasm_bridge.cpp`
+- WASM build script: `scripts/build-wasm.sh`
+- Vercel config: `vercel.json` (`outputDirectory: web`)
+
+### WASM build (requires Emscripten)
+
+```bash
+./scripts/build-wasm.sh
+```
+
+If `emcc` is missing, install Emscripten (`emsdk`) first.
