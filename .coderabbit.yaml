@@ -1,0 +1,22 @@
+version: 2
+reviews:
+  auto_review:
+    enabled: true
+    drafts: false
+  review_status: true
+  poem: false
+  collapse_walkthrough: false
+path_filters:
+  - "!**/*.lock"
+  - "!/node_modules/"
+  - "!**/.env*"
+  - "!/data/benchmarks/"
+chat:
+  auto_reply: true
+labels:
+  risk_level:
+    enabled: true
+    labels:
+      low: "review:low-risk"
+      medium: "review:medium-risk"
+      high: "review:high-risk"
