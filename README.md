@@ -1,5 +1,7 @@
 # dungeon-cli
 
+> **Historical CLI / portfolio project.** Current browser and Reddit versions are developed in [dungeon-blackjack-wasm](https://github.com/mendyraul/dungeon-blackjack-wasm). That repository contains source snapshots, shared game engines and renderers, the website, and separate Reddit apps. This original repository remains public and editable and has no automated Reddit deployment workflow. The active repository is private, so viewing its source requires access.
+
 Terminal roguelike template in C++17.
 
 ## What this project includes
@@ -78,7 +80,3 @@ g++ -std=c++17 -O2 -Wall -Wextra -Iinclude src/*.cpp -o dungeon-cli
 - Save file is plain text: `savegame.txt`
 - Loading starts from a freshly generated map, then restores player/enemy/item state
 
-## Git notes
-
-Repository is initialized locally on branch `dev`.
-No commits were made per your request.
